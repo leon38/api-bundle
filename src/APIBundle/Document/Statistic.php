@@ -1,15 +1,18 @@
 <?php
 
-namespace APIBundle\Documents;
+namespace APIBundle\Document;
 
+use Doctrine\ODM\MongoDB\Event\LifecycleEventArgs;
 use Doctrine\ODM\MongoDB\Mapping\Annotations as MongoDB;
 use Symfony\Component\Validator\Constraints as Assert;
+use Doctrine\ORM\Mapping as ORM;
 
 /**
  * Class Statistic
- * @package APIBundle\Documents
+ * @package APIBundle\Document
  *
- * @MongoDB\Document
+ * @MongoDB\Document(repositoryClass="APIBundle\Repository\StatisticRepository")
+ * @ORM\HasLifecycleCallbacks
  */
 class Statistic
 {
@@ -36,7 +39,7 @@ class Statistic
     /**
      * @var String $document_location
      * @Assert\Url(message="The current url {{ value }} is not a valid url")
-     * @MongoDB\Field(type="String")
+     * @MongoDB\Field(type="string")
      */
     protected $document_location;
 
@@ -44,7 +47,7 @@ class Statistic
     /**
      * @var String $document_referrer
      * @Assert\Url(message="The referrer url {{ value }} is not a valid url")
-     * @MongoDB\Field(type="String")
+     * @MongoDB\Field(type="string")
      */
     protected $document_referrer;
 
@@ -65,7 +68,7 @@ class Statistic
     /**
      * @var String $wiiz_unique_user_id
      * @Assert\NotBlank(message="The user id is mandatory")
-     * @MongoDB\Field(type="int")
+     * @MongoDB\Field(type="string")
      */
     protected $wiiz_unique_user_id;
 
@@ -96,9 +99,9 @@ class Statistic
 
     /**
      * @var String $tracking_id
-     * @Assert\NotBlank()
+     * @Assert\NotBlank(message="The tracking id is mandatory")
      * @Assert\Regex("/UA-\w+-Y/", message="The tracking id is not valid")
-     * @MongoDB\Field(type="String")
+     * @MongoDB\Field(type="string")
      */
     protected $tracking_id;
 
@@ -106,39 +109,39 @@ class Statistic
      * @var String $data_source
      * @Assert\NotBlank()
      * @Assert\Choice(choices={"web", "apps", "backend"})
-     * @MongoDB\Field(type="String")
+     * @MongoDB\Field(type="string")
      */
     protected $data_source;
 
 
     /**
      * @var String $campaign_name
-     * @MongoDB\Field(type="String")
+     * @MongoDB\Field(type="string")
      */
     protected $campaign_name;
 
     /**
      * @var String $campaign_source
-     * @MongoDB\Field(type="String")
+     * @MongoDB\Field(type="string")
      */
     protected $campaign_source;
 
     /**
      * @var String $campaign_medium
-     * @MongoDB\Field(type="String")
+     * @MongoDB\Field(type="string")
      */
     protected $campaign_medium;
 
 
     /**
      * @var String $campaign_keyword
-     * @MongoDB\Field(type="String")
+     * @MongoDB\Field(type="string")
      */
     protected $campaign_keyword;
 
     /**
      * @var String $campaign_content
-     * @MongoDB\Field(type="String")
+     * @MongoDB\Field(type="string")
      */
     protected $campaign_content;
 
@@ -169,6 +172,12 @@ class Statistic
      * @MongoDB\Field(type="string")
      */
     protected $queue_time;
+
+    /**
+     * @var \DateTime $created
+     * @MongoDB\Field(type="date")
+     */
+    protected $created;
 
     /**
      * @return mixed
@@ -530,5 +539,28 @@ class Statistic
         $this->queue_time = $queue_time;
     }
 
+    /**
+     * @return mixed
+     */
+    public function getCreated()
+    {
+        return $this->created;
+    }
 
+    /**
+     * @param mixed $created
+     */
+    public function setCreated($created)
+    {
+        $this->created = $created;
+    }
+
+
+    /** @ORM\PrePersist
+     * @param LifecycleEventArgs $eventArgs
+     */
+    public function setCreatedValue(LifecycleEventArgs $eventArgs)
+    {
+        $this->created = date('Y-m-d H:i:s');
+    }
 }

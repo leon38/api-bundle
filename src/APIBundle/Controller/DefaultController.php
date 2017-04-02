@@ -2,10 +2,11 @@
 
 namespace APIBundle\Controller;
 
-use APIBundle\Documents\Statistic;
+use APIBundle\Document\Statistic;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
 
 class DefaultController extends Controller
 {
@@ -14,14 +15,29 @@ class DefaultController extends Controller
      */
     public function indexAction(Request $request)
     {
+        $now = new \DateTime();
+        $dm = $this->get('doctrine_mongodb')->getManager();
+        $lastStatistic = $dm->getRepository('APIBundle:Statistic')->getLastStatistic();
+        $save = true;
+        if ($lastStatistic->getCreated() != null) {
+            $diff = $now->diff($lastStatistic->getCreated());
+            if ($diff->i == 0 && $diff->h == 0 && $diff->d == 0 && $diff->m == 0 && $diff->y == 0 && $diff->s <= 1) {
+                $save = false;
+            }
+        }
         $statistic = new Statistic();
         $userMobile = ($request->get('ds') == "apps");
 
         $cookies = $request->cookies;
         $wct = $request->get('wct', '');
         $wui = $request->get('wui', '');
+        $user = $dm->getRepository('APIBundle:User')->findOneBy(array('wui' => $wui));
+        if (is_null($user)) {
+            $errors[] = "This user doesn't exist";
+        }
         $wuui = $request->get('wuui', '');
         $hit_type = $request->get('t');
+        $qt = (int)$request->get('qt', 0);
 
         if (!$userMobile) {
             if ($wct == '' && $cookies->has('wiizbii_stat_wct')) {
@@ -53,6 +69,11 @@ class DefaultController extends Controller
             }
         }
 
+        $qt_max = (int)$this->getParameter('queue_time_max');
+        if ($qt > $qt_max) {
+            $errors[] = "The queue time is more than queue time max";
+        }
+
         $statistic->setVersion($request->get('v'));
         $statistic->setHitType($request->get('t'));
         $statistic->setDocumentLocation($request->get('dl'));
@@ -73,17 +94,24 @@ class DefaultController extends Controller
         $statistic->setScreenName($request->get('sn'));
         $statistic->setApplicationName($request->get('an'));
         $statistic->setApplicationVersion($request->get('av'));
-        $statistic->setQueueTime($request->get('qt'));
+        $statistic->setQueueTime($qt);
+        $statistic->setCreated($now);
 
         $validator = $this->get('validator');
-        $errors = $validator->validate($statistic);
-        if (count($errors) > 0) {
-            $errorsString = (string) $errors;
+        $errors_validate = $validator->validate($statistic);
+        if (count($errors_validate) > 0) {
+            foreach ($errors_validate as $error) {
+                $errors[] = $error->getMessage();
+            }
+        }
+        if (count($errors)) {
             return new JsonResponse(array("errors" => $errors));
         }
 
-
-
-
+        if ($save) {
+            $dm->persist($statistic);
+            $dm->flush();
+        }
+        return new JsonResponse(array("status" => "OK"));
     }
 }
