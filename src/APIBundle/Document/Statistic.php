@@ -2,17 +2,18 @@
 
 namespace APIBundle\Document;
 
-use Doctrine\ODM\MongoDB\Event\LifecycleEventArgs;
 use Doctrine\ODM\MongoDB\Mapping\Annotations as MongoDB;
+use Doctrine\ODM\MongoDB\Mapping\Annotations\HasLifecycleCallbacks;
+use Doctrine\ODM\MongoDB\Mapping\Annotations\PrePersist;
 use Symfony\Component\Validator\Constraints as Assert;
-use Doctrine\ORM\Mapping as ORM;
 
 /**
  * Class Statistic
  * @package APIBundle\Document
  *
  * @MongoDB\Document(repositoryClass="APIBundle\Repository\StatisticRepository")
- * @ORM\HasLifecycleCallbacks
+ * @HasLifecycleCallbacks
+ * @Assert\Callback({"APIBundle\Validator\StatisticValidator", "validate"})
  */
 class Statistic
 {
@@ -178,6 +179,9 @@ class Statistic
      * @MongoDB\Field(type="date")
      */
     protected $created;
+
+
+    protected $cookies;
 
     /**
      * @return mixed
@@ -556,11 +560,27 @@ class Statistic
     }
 
 
-    /** @ORM\PrePersist
-     * @param LifecycleEventArgs $eventArgs
+    /**
+     * @PrePersist
      */
-    public function setCreatedValue(LifecycleEventArgs $eventArgs)
+    public function setCreatedValue()
     {
         $this->created = date('Y-m-d H:i:s');
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getCookies()
+    {
+        return $this->cookies;
+    }
+
+    /**
+     * @param mixed $cookies
+     */
+    public function setCookies($cookies)
+    {
+        $this->cookies = $cookies;
     }
 }

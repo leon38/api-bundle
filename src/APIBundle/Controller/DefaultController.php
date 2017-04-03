@@ -17,62 +17,34 @@ class DefaultController extends Controller
     {
         $now = new \DateTime();
         $dm = $this->get('doctrine_mongodb')->getManager();
-        $lastStatistic = $dm->getRepository('APIBundle:Statistic')->getLastStatistic();
+        $wct = $request->get('wct', '');
+        $wui = $request->get('wui', '');
+        $wuui = $request->get('wuui', '');
+        $lastStatistic = $dm->getRepository('APIBundle:Statistic')->getLastStatistic($wct, $wui, $wuui);
         $save = true;
         if ($lastStatistic->getCreated() != null) {
             $diff = $now->diff($lastStatistic->getCreated());
             if ($diff->i == 0 && $diff->h == 0 && $diff->d == 0 && $diff->m == 0 && $diff->y == 0 && $diff->s <= 1) {
                 $save = false;
+                return new JsonResponse(array('status' => false, 'error' => 'Too many statistics in a short period of time !'));
             }
         }
-        $statistic = new Statistic();
-        $userMobile = ($request->get('ds') == "apps");
 
-        $cookies = $request->cookies;
-        $wct = $request->get('wct', '');
-        $wui = $request->get('wui', '');
         $user = $dm->getRepository('APIBundle:User')->findOneBy(array('wui' => $wui));
         if (is_null($user)) {
-            $errors[] = "This user doesn't exist";
+            return new JsonResponse(array('status' => false, 'error' => 'This user does not exist'));
         }
-        $wuui = $request->get('wuui', '');
-        $hit_type = $request->get('t');
+
+
         $qt = (int)$request->get('qt', 0);
-
-        if (!$userMobile) {
-            if ($wct == '' && $cookies->has('wiizbii_stat_wct')) {
-                $wct = $cookies->get('wiizbii_stat_wct');
-            }
-            if ($wui == '' && $cookies->has('wiizbii_stat_wui')) {
-                $wui = $cookies->get('wiizbii_stat_wui');
-            }
-            if ($wuui == '' && $cookies->has('wiizbii_stat_wuui')) {
-                $wuui = $cookies->get('wiizbii_stat_wuui');
-            }
-        } else {
-            if ($request->get('an') == '') {
-                $errors_controller[] = "The application name is mandatory for mobile users";
-            }
-        }
-
-        if ($hit_type == 'event') {
-            if ($request->get('ec') == '') {
-                $errors_controller[] = "The event category is mandatory for event hits";
-            }
-
-            if ($request->get('ea') == '') {
-                $errors_controller[] = "The event action is mandatory for event hits";
-            }
-        } else if ($hit_type == 'screenview') {
-            if ($request->get('sn') == '') {
-                $errors_controller[] = "The screen name is mandatory for screenview hits";
-            }
-        }
-
         $qt_max = (int)$this->getParameter('queue_time_max');
         if ($qt > $qt_max) {
-            $errors[] = "The queue time is more than queue time max";
+            return new JsonResponse(array('status' => false, 'error' => "The queue time is more than queue time max"));
         }
+
+        $statistic = new Statistic();
+        $parameters = $request->query->all();
+        dump($parameters); die;
 
         $statistic->setVersion($request->get('v'));
         $statistic->setHitType($request->get('t'));
@@ -95,7 +67,7 @@ class DefaultController extends Controller
         $statistic->setApplicationName($request->get('an'));
         $statistic->setApplicationVersion($request->get('av'));
         $statistic->setQueueTime($qt);
-        $statistic->setCreated($now);
+        $statistic->setCookies($request->cookies);
 
         $validator = $this->get('validator');
         $errors_validate = $validator->validate($statistic);
@@ -105,13 +77,13 @@ class DefaultController extends Controller
             }
         }
         if (count($errors)) {
-            return new JsonResponse(array("errors" => $errors));
+            return new JsonResponse(array("status" => false, "errors" => $errors));
         }
 
         if ($save) {
             $dm->persist($statistic);
             $dm->flush();
         }
-        return new JsonResponse(array("status" => "OK"));
+        return new JsonResponse(array("status" => true));
     }
 }
