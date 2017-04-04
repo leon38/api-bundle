@@ -11,7 +11,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  * Class Statistic
  * @package APIBundle\Document
  *
- * @MongoDB\Document(repositoryClass="APIBundle\Repository\StatisticRepository")
+ * @MongoDB\Document()
  * @HasLifecycleCallbacks
  * @Assert\Callback({"APIBundle\Validator\StatisticValidator", "validate"})
  */
@@ -28,21 +28,21 @@ class Statistic
      * @Assert\EqualTo(value=1, message="This API Version number does not exist")
      * @MongoDB\Field(type="int")
      */
-    protected $version;
+    protected $v;
 
     /**
      * @var String $hit_type
      * @Assert\Choice(choices={"pageview", "screenview", "event"}, message="This hit type '{{ value }}' is not valid")
      * @MongoDB\Field(type="string")
      */
-    protected $hit_type;
+    protected $t;
 
     /**
      * @var String $document_location
      * @Assert\Url(message="The current url {{ value }} is not a valid url")
      * @MongoDB\Field(type="string")
      */
-    protected $document_location;
+    protected $dl;
 
 
     /**
@@ -50,7 +50,7 @@ class Statistic
      * @Assert\Url(message="The referrer url {{ value }} is not a valid url")
      * @MongoDB\Field(type="string")
      */
-    protected $document_referrer;
+    protected $dr;
 
 
     /**
@@ -58,45 +58,45 @@ class Statistic
      * @Assert\Choice(choices={"profile", "recruiter", "visitor", "wizbii_employee"}, message="The creator type {{ value }} is not valid")
      * @MongoDB\Field(type="string")
      */
-    protected $wiiz_creator_type;
+    protected $wct;
 
     /**
      * @var String $wiiz_user_id
      * @MongoDB\Field(type="string")
      */
-    protected $wiiz_user_id;
+    protected $wui;
 
     /**
      * @var String $wiiz_unique_user_id
      * @Assert\NotBlank(message="The user id is mandatory")
      * @MongoDB\Field(type="string")
      */
-    protected $wiiz_unique_user_id;
+    protected $wuui;
 
     /**
      * @var String $event_category
      * @MongoDB\Field(type="string")
      */
-    protected $event_category;
+    protected $ec;
 
     /**
      * @var String $event_action
      * @MongoDB\Field(type="string")
      */
-    protected $event_action;
+    protected $ea;
 
     /**
      * @var String $event_label
      * @MongoDB\Field(type="string")
      */
-    protected $event_label;
+    protected $el;
 
     /**
      * @var int $event_value
      * @Assert\GreaterThanOrEqual(value=0)
      * @MongoDB\Field(type="int")
      */
-    protected $event_value;
+    protected $ev;
 
     /**
      * @var String $tracking_id
@@ -104,7 +104,7 @@ class Statistic
      * @Assert\Regex("/UA-\w+-Y/", message="The tracking id is not valid")
      * @MongoDB\Field(type="string")
      */
-    protected $tracking_id;
+    protected $tid;
 
     /**
      * @var String $data_source
@@ -112,67 +112,67 @@ class Statistic
      * @Assert\Choice(choices={"web", "apps", "backend"})
      * @MongoDB\Field(type="string")
      */
-    protected $data_source;
+    protected $ds;
 
 
     /**
      * @var String $campaign_name
      * @MongoDB\Field(type="string")
      */
-    protected $campaign_name;
+    protected $cn;
 
     /**
      * @var String $campaign_source
      * @MongoDB\Field(type="string")
      */
-    protected $campaign_source;
+    protected $cs;
 
     /**
      * @var String $campaign_medium
      * @MongoDB\Field(type="string")
      */
-    protected $campaign_medium;
+    protected $cm;
 
 
     /**
      * @var String $campaign_keyword
      * @MongoDB\Field(type="string")
      */
-    protected $campaign_keyword;
+    protected $ck;
 
     /**
      * @var String $campaign_content
      * @MongoDB\Field(type="string")
      */
-    protected $campaign_content;
+    protected $cc;
 
     /**
      * @var String $screen_name
      * Les contraintes sont vérifiées dans le controller
      * @MongoDB\Field(type="string")
      */
-    protected $screen_name;
+    protected $sn;
 
     /**
      * @var String $application_name
      * Les contraintes sont vérifiées dans le controller
      * @MongoDB\Field(type="string")
      */
-    protected $application_name;
+    protected $an;
 
 
     /**
      * @var String $application_version
      * @MongoDB\Field(type="string")
      */
-    protected $application_version;
+    protected $av;
 
     /**
      * @var String $application_version
      * @Assert\GreaterThanOrEqual(value=0)
      * @MongoDB\Field(type="string")
      */
-    protected $queue_time;
+    protected $qt;
 
     /**
      * @var \DateTime $created
@@ -194,353 +194,353 @@ class Statistic
     /**
      * @return int
      */
-    public function getVersion()
+    public function getV()
     {
-        return $this->version;
+        return $this->v;
     }
 
     /**
-     * @param int $version
+     * @param int $v
      */
-    public function setVersion($version)
+    public function setV($v)
     {
-        $this->version = $version;
-    }
-
-    /**
-     * @return String
-     */
-    public function getHitType()
-    {
-        return $this->hit_type;
-    }
-
-    /**
-     * @param String $hit_type
-     */
-    public function setHitType($hit_type)
-    {
-        $this->hit_type = $hit_type;
+        $this->v = $v;
     }
 
     /**
      * @return String
      */
-    public function getDocumentLocation()
+    public function getT()
     {
-        return $this->document_location;
+        return $this->t;
     }
 
     /**
-     * @param String $document_location
+     * @param String $t
      */
-    public function setDocumentLocation($document_location)
+    public function setT($t)
     {
-        $this->document_location = $document_location;
-    }
-
-    /**
-     * @return String
-     */
-    public function getDocumentReferrer()
-    {
-        return $this->document_referrer;
-    }
-
-    /**
-     * @param String $document_referrer
-     */
-    public function setDocumentReferrer($document_referrer)
-    {
-        $this->document_referrer = $document_referrer;
+        $this->t = $t;
     }
 
     /**
      * @return String
      */
-    public function getWiizCreatorType()
+    public function getDl()
     {
-        return $this->wiiz_creator_type;
+        return $this->dl;
     }
 
     /**
-     * @param String $wiiz_creator_type
+     * @param String $dl
      */
-    public function setWiizCreatorType($wiiz_creator_type)
+    public function setDl($dl)
     {
-        $this->wiiz_creator_type = $wiiz_creator_type;
-    }
-
-    /**
-     * @return String
-     */
-    public function getWiizUserId()
-    {
-        return $this->wiiz_user_id;
-    }
-
-    /**
-     * @param String $wiiz_user_id
-     */
-    public function setWiizUserId($wiiz_user_id)
-    {
-        $this->wiiz_user_id = $wiiz_user_id;
+        $this->dl = $dl;
     }
 
     /**
      * @return String
      */
-    public function getWiizUniqueUserId()
+    public function getDr()
     {
-        return $this->wiiz_unique_user_id;
+        return $this->dr;
     }
 
     /**
-     * @param String $wiiz_unique_user_id
+     * @param String $dr
      */
-    public function setWiizUniqueUserId($wiiz_unique_user_id)
+    public function setDr($dr)
     {
-        $this->wiiz_unique_user_id = $wiiz_unique_user_id;
-    }
-
-    /**
-     * @return String
-     */
-    public function getEventCategory()
-    {
-        return $this->event_category;
-    }
-
-    /**
-     * @param String $event_category
-     */
-    public function setEventCategory($event_category)
-    {
-        $this->event_category = $event_category;
+        $this->dr = $dr;
     }
 
     /**
      * @return String
      */
-    public function getEventAction()
+    public function getWct()
     {
-        return $this->event_action;
+        return $this->wct;
     }
 
     /**
-     * @param String $event_action
+     * @param String $wct
      */
-    public function setEventAction($event_action)
+    public function setWct($wct)
     {
-        $this->event_action = $event_action;
+        $this->wct = $wct;
     }
 
     /**
      * @return String
      */
-    public function getEventLabel()
+    public function getWui()
     {
-        return $this->event_label;
+        return $this->wui;
     }
 
     /**
-     * @param String $event_label
+     * @param String $wui
      */
-    public function setEventLabel($event_label)
+    public function setWui($wui)
     {
-        $this->event_label = $event_label;
+        $this->wui = $wui;
+    }
+
+    /**
+     * @return String
+     */
+    public function getWuui()
+    {
+        return $this->wuui;
+    }
+
+    /**
+     * @param String $wuui
+     */
+    public function setWuui($wuui)
+    {
+        $this->wuui = $wuui;
+    }
+
+    /**
+     * @return String
+     */
+    public function getEc()
+    {
+        return $this->ec;
+    }
+
+    /**
+     * @param String $ec
+     */
+    public function setEc($ec)
+    {
+        $this->ec = $ec;
+    }
+
+    /**
+     * @return String
+     */
+    public function getEa()
+    {
+        return $this->ea;
+    }
+
+    /**
+     * @param String $ea
+     */
+    public function setEa($ea)
+    {
+        $this->ea = $ea;
+    }
+
+    /**
+     * @return String
+     */
+    public function getEl()
+    {
+        return $this->el;
+    }
+
+    /**
+     * @param String $el
+     */
+    public function setEl($el)
+    {
+        $this->el = $el;
     }
 
     /**
      * @return int
      */
-    public function getEventValue()
+    public function getEv()
     {
-        return $this->event_value;
+        return $this->ev;
     }
 
     /**
-     * @param int $event_value
+     * @param int $ev
      */
-    public function setEventValue($event_value)
+    public function setEv($ev)
     {
-        $this->event_value = $event_value;
-    }
-
-    /**
-     * @return String
-     */
-    public function getTrackingId()
-    {
-        return $this->tracking_id;
-    }
-
-    /**
-     * @param String $tracking_id
-     */
-    public function setTrackingId($tracking_id)
-    {
-        $this->tracking_id = $tracking_id;
+        $this->ev = $ev;
     }
 
     /**
      * @return String
      */
-    public function getDataSource()
+    public function getTid()
     {
-        return $this->data_source;
+        return $this->tid;
     }
 
     /**
-     * @param String $data_source
+     * @param String $tid
      */
-    public function setDataSource($data_source)
+    public function setTid($tid)
     {
-        $this->data_source = $data_source;
-    }
-
-    /**
-     * @return String
-     */
-    public function getCampaignName()
-    {
-        return $this->campaign_name;
-    }
-
-    /**
-     * @param String $campaign_name
-     */
-    public function setCampaignName($campaign_name)
-    {
-        $this->campaign_name = $campaign_name;
+        $this->tid = $tid;
     }
 
     /**
      * @return String
      */
-    public function getCampaignSource()
+    public function getDs()
     {
-        return $this->campaign_source;
+        return $this->ds;
     }
 
     /**
-     * @param String $campaign_source
+     * @param String $ds
      */
-    public function setCampaignSource($campaign_source)
+    public function setDs($ds)
     {
-        $this->campaign_source = $campaign_source;
-    }
-
-    /**
-     * @return String
-     */
-    public function getCampaignMedium()
-    {
-        return $this->campaign_medium;
-    }
-
-    /**
-     * @param String $campaign_medium
-     */
-    public function setCampaignMedium($campaign_medium)
-    {
-        $this->campaign_medium = $campaign_medium;
+        $this->ds = $ds;
     }
 
     /**
      * @return String
      */
-    public function getCampaignKeyword()
+    public function getCn()
     {
-        return $this->campaign_keyword;
+        return $this->cn;
     }
 
     /**
-     * @param String $campaign_keyword
+     * @param String $cn
      */
-    public function setCampaignKeyword($campaign_keyword)
+    public function setCn($cn)
     {
-        $this->campaign_keyword = $campaign_keyword;
-    }
-
-    /**
-     * @return String
-     */
-    public function getCampaignContent()
-    {
-        return $this->campaign_content;
-    }
-
-    /**
-     * @param String $campaign_content
-     */
-    public function setCampaignContent($campaign_content)
-    {
-        $this->campaign_content = $campaign_content;
+        $this->cn = $cn;
     }
 
     /**
      * @return String
      */
-    public function getScreenName()
+    public function getCs()
     {
-        return $this->screen_name;
+        return $this->cs;
     }
 
     /**
-     * @param String $screen_name
+     * @param String $cs
      */
-    public function setScreenName($screen_name)
+    public function setCs($cs)
     {
-        $this->screen_name = $screen_name;
-    }
-
-    /**
-     * @return String
-     */
-    public function getApplicationName()
-    {
-        return $this->application_name;
-    }
-
-    /**
-     * @param String $application_name
-     */
-    public function setApplicationName($application_name)
-    {
-        $this->application_name = $application_name;
+        $this->cs = $cs;
     }
 
     /**
      * @return String
      */
-    public function getApplicationVersion()
+    public function getCm()
     {
-        return $this->application_version;
+        return $this->cm;
     }
 
     /**
-     * @param String $application_version
+     * @param String $cm
      */
-    public function setApplicationVersion($application_version)
+    public function setCm($cm)
     {
-        $this->application_version = $application_version;
+        $this->cm = $cm;
     }
 
     /**
      * @return String
      */
-    public function getQueueTime()
+    public function getCk()
     {
-        return $this->queue_time;
+        return $this->ck;
     }
 
     /**
-     * @param String $queue_time
+     * @param String $ck
      */
-    public function setQueueTime($queue_time)
+    public function setCk($ck)
     {
-        $this->queue_time = $queue_time;
+        $this->ck = $ck;
+    }
+
+    /**
+     * @return String
+     */
+    public function getCc()
+    {
+        return $this->cc;
+    }
+
+    /**
+     * @param String $cc
+     */
+    public function setCc($cc)
+    {
+        $this->cc = $cc;
+    }
+
+    /**
+     * @return String
+     */
+    public function getSn()
+    {
+        return $this->sn;
+    }
+
+    /**
+     * @param String $sn
+     */
+    public function setSn($sn)
+    {
+        $this->sn = $sn;
+    }
+
+    /**
+     * @return String
+     */
+    public function getAn()
+    {
+        return $this->an;
+    }
+
+    /**
+     * @param String $an
+     */
+    public function setAn($an)
+    {
+        $this->an = $an;
+    }
+
+    /**
+     * @return String
+     */
+    public function getAv()
+    {
+        return $this->av;
+    }
+
+    /**
+     * @param String $av
+     */
+    public function setAv($av)
+    {
+        $this->av = $av;
+    }
+
+    /**
+     * @return String
+     */
+    public function getQt()
+    {
+        return $this->qt;
+    }
+
+    /**
+     * @param String $qt
+     */
+    public function setQt($qt)
+    {
+        $this->qt = $qt;
     }
 
     /**
@@ -582,5 +582,11 @@ class Statistic
     public function setCookies($cookies)
     {
         $this->cookies = $cookies;
+    }
+
+
+    public function __set($name, $value)
+    {
+        $this->{"set".ucfirst($name)}($value);
     }
 }

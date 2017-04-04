@@ -13,12 +13,12 @@ use Doctrine\ODM\MongoDB\DocumentRepository;
 class StatisticRepository extends DocumentRepository
 {
 
-    public function getLastStatistic()
+    public function getLastStatistic($wct, $wui, $wuui)
     {
         return $this->createQueryBuilder()
             ->field('id')
             ->sort('created', 'DESC')
-            ->popFirst()
+            ->where('wct=:wct')
             ->getQuery()
             ->getSingleResult();
     }
