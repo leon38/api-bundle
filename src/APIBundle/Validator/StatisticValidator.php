@@ -20,6 +20,7 @@ class StatisticValidator
 
         $hit_type = $stat->getT();
         $userMobile = ($stat->getDs() == "apps");
+        // Si c'est un utilisateur mobile, le nom de l'application est obligatoire
         if ($userMobile) {
             if ($stat->getAn() == '') {
                 $context->buildViolation("The application name is mandatory for mobile users")
@@ -27,12 +28,11 @@ class StatisticValidator
                     ->addViolation();
             }
         } else  {
+            // Si c'est un utilisateur web, on va chercher les valeurs dans le cookie.
             if ($stat->getWct() == '') {
-                // On ira le chercher dans les cookies
                 $stat->setWct($cookies->get('wct'));
             }
             if ($stat->getWui() == '') {
-                // On ira le chercher dans les cookies
                 $stat->setWui($cookies->get('wuid'));
             }
             if ($stat->getWuui() == '') {
@@ -40,6 +40,7 @@ class StatisticValidator
             }
         }
 
+        // Liste d'utilisateur exemple, on vérifie que l'utilisateur existe
         $user = (in_array($stat->getWui(), array('emeric-wasson', 'remi-alvado', 'damien-corona')));
         if (!$user) {
             $context->buildViolation("This user does not exist")
@@ -47,6 +48,7 @@ class StatisticValidator
                 ->addViolation();
         }
 
+        // Si c'est une statistique de type évènement, on vérifie tous les paramètres obligatoires
         if ($hit_type == 'event') {
             if ($stat->getEc() == '') {
                 $context->buildViolation("The event category is mandatory for event hits")
